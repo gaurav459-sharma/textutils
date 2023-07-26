@@ -1,15 +1,22 @@
 
 import './App.css';
+import Mainpage from './components/Mainpage';
+import About from './components/About';
 import Navbar from './components/Navbar';
-import TextForm from './components/TextForm';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 function App() {
   return (
     <>
-
-     <Navbar title="TextUtils"/>
-     <div className="container my-3 ">
-         <TextForm title="Enter the text to analyze below" />
-     </div>
+    <BrowserRouter>
+    <Navbar/>
+    <Routes>
+      <Route exact path="/textutils" element={<Mainpage></Mainpage>}/>
+      <Route exact path="/about" element={<About></About>}/>
+    </Routes>
+    </BrowserRouter>
+    
+     
+    
     </>
   );
 }
