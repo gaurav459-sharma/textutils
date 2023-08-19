@@ -7,36 +7,29 @@ export default function TextForm(props) {
     const[vcount,setvCount]=useState(0)
     const[concount,setconCount]=useState(0)
     const [word, setWord] = useState([])
-    const [myStyle, setMyStyle] = useState({
-      color:'black',
-      backgroundColor:'white'
-    })
-    const [myPreviewStyle, setmyPreviewStyle] = useState({
-      backgroundColor:"whitesmoke", 
-      width:"100%", 
-      border:"2px solid #b5b4b0" ,
-      borderRadius:"10px",
-      paddingLeft:"5px"
-    })
-
+   
 
     const handleUpTextChange=()=>{
        let newText=dummyText.toUpperCase();
        setdummyText(newText)
+       props.showAlert("converted to uppercase!","success")
        
     }
     const handleLowTextChange=()=>{
        let newText=dummyText.toLowerCase();
        setdummyText(newText)
+       props.showAlert("converted to lowercase!","success")
     }
     const handleSpeakText=()=>{
         let msg=new SpeechSynthesisUtterance(text);
          window.speechSynthesis.speak(msg);
         setSpeak(false)
+        props.showAlert("speak text is enabled","success")
     }
     const handleStopText=()=>{
         window.speechSynthesis.cancel()
         setSpeak(true)
+        props.showAlert("speak text is disabled","success")
     }
     
     const handleOnChange=(event)=>{
@@ -50,6 +43,7 @@ export default function TextForm(props) {
         setdummyText('')
         setconCount(0)
         setvCount(0)
+        props.showAlert("text is cleared","success")
     }
     function getFrequency(string) {
         let freq = {};
@@ -86,6 +80,7 @@ export default function TextForm(props) {
     }
     setWord(word)
     console.log(word)
+    props.showAlert("text summary enabled","success")
       
     }
     const capitalized=()=>{
@@ -96,6 +91,7 @@ export default function TextForm(props) {
         }
 
         setdummyText(temp)
+        props.showAlert("capitalized the text","success")
     }
     const handleReverse=()=>{
       let arr=text.split(" ");
@@ -105,57 +101,30 @@ export default function TextForm(props) {
         tmp+=arr[i]+" ";
       }
       setdummyText(tmp)
+      props.showAlert("text is reversed","success")
 
     }
-    const handeleStyle=()=>{
-      if(myStyle.color==='black'){
-        setMyStyle({
-          color:'white',
-          backgroundColor:'black'
-        })
-        setmyPreviewStyle({
-          backgroundColor:"black",
-          color:'white',
-          width:"100%", 
-          border:"2px solid #b5b4b0" ,
-          borderRadius:"10px",
-          paddingLeft:"5px"
-        })
-      }
-      else{
-       setMyStyle({
-         color:'black',
-        backgroundColor:'white'
-       })
-       setmyPreviewStyle({
-        backgroundColor:"whitesmoke", 
-        width:"100%", 
-        border:"2px solid #b5b4b0" ,
-        borderRadius:"10px",
-        paddingLeft:"5px"
-       })
-      }
-    }
+  
    const handleCopy=()=>{
      var txt=document.getElementById("exampleFormControlTextarea1");
      txt.select();
      navigator.clipboard.writeText(txt.value)
+     props.showAlert("text copied","success")
    }
    const handleExtraSpaces=()=>{
      let newtxt=text.split(/[ ]+/);
      setText(newtxt.join(" "))
+     props.showAlert("extra spaces removed","success")
    }
   return (
     
-    <>
-     <div className='container' style={myStyle}>
+    <div style={{backgroundColor:props.colormode.body , color:props.colormode.nav==='white'?'black':'white'}}>
+     <div className='container' >
         <div className="mb-3">
-          <div className="d-flex" role="search">
-          <button onClick={handeleStyle} className="btn btn-primary" type= "submit">Enable dark mode</button>
-        </div>
+  
             <h1>{props.title}</h1>
             
-        <textarea style={myStyle} value={text}  onChange={handleOnChange} className="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+        <textarea style={{backgroundColor:props.colormode.body, color:props.colormode.nav==='white'?'black':'white'}} value={text}  onChange={handleOnChange} className="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
          </div>
          <button onClick={handleUpTextChange} className="btn btn-primary mx-2 my-2">Convert to UpperCase</button>
          <button onClick={handleLowTextChange} className="btn btn-primary mx-2 my-2">Convert to LowerCase</button>
@@ -171,11 +140,11 @@ export default function TextForm(props) {
 
                   
     </div>
-    <div className="container my-3" style={myStyle}>
+    <div className="container my-3" style={{}}>
         <h1>Your Text Summary</h1>
         <hr />
-        <p>{text.split(" ").length-1} Words and {text.length} Characters</p>
-        <p>{0.008*text.split(" ").length} Minutes read </p>
+        <p>{text.trim() === '' ? 0 : text.match(/\S+/g).length} words and {text.replace(/\s+/g, '').length} characters</p>
+        <p>{0.008*(text.trim() === '' ? 0 : text.match(/\S+/g).length)} Minutes read </p>
         <hr />
         <p>No. of vowels: {vcount} </p>
         <p>No. of consonant:{concount} </p>
@@ -187,10 +156,10 @@ export default function TextForm(props) {
         ))}   */}
        </p>
         <h2>Preview</h2>
-        <p id="myText" style={myPreviewStyle}>{dummyText}</p>
+        <p id="myText" >{text.length>0?dummyText:"Enter something in Textbox.."}</p>
     </div>
     
-    </>
+    </div>
    
   )
 }
